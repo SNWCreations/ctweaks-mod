@@ -2,6 +2,7 @@ package snw.mods.ctweaks.mod.client.net;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.architectury.networking.NetworkManager;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -16,7 +17,10 @@ public final class ClientNetHandler {
 
     public static void init() {
         log.info("Registering network handlers");
-        registerPayloads();
+//        registerPayloads();
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, ModPayload.TYPE, ModPayload.CODEC, (payload, ctx) -> {
+            getModC2SConnection().handlePayload(payload);
+        });
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> getModC2SConnection().onConnected());
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
             if (getVanillaConnection() != null) {
