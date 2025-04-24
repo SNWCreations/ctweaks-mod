@@ -44,11 +44,8 @@ public class ModC2SConnection {
 
     public void handlePayload(ModPayload payload) {
         try {
-            final ByteBuf data = payload.data();
-            final int i = data.readableBytes();
-            final byte[] raw = new byte[i];
-            data.readBytes(raw);
-            final ByteArrayDataInput in = ByteStreams.newDataInput(raw);
+            final byte[] data = payload.data();
+            final ByteArrayDataInput in = ByteStreams.newDataInput(data);
             final DeserializedPacket<ClientboundPacketHandler> packetContainer = packetDeserializer.deserialize(in);
             final snw.lib.protocol.packet.Packet<ClientboundPacketHandler> modPacket = packetContainer.packet();
             if (modPacket != null) {
