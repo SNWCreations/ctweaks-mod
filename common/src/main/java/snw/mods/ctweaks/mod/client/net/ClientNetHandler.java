@@ -3,6 +3,9 @@ package snw.mods.ctweaks.mod.client.net;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.networking.NetworkManager;
 import lombok.extern.slf4j.Slf4j;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import org.jetbrains.annotations.Nullable;
 
 import static snw.mods.ctweaks.mod.client.net.ModC2SConnection.getModC2SConnection;
 
@@ -16,6 +19,14 @@ public final class ClientNetHandler {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, ModPayload.TYPE, ModPayload.CODEC,
                 (payload, context) -> getModC2SConnection().handlePayload(payload));
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> getModC2SConnection().onConnected());
-        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> getModC2SConnection().onDisconnect());
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
+            if (getVanillaConnection() != null) {
+                getModC2SConnection().onDisconnect();
+            }
+        });
+    }
+
+    public static @Nullable ClientPacketListener getVanillaConnection() {
+        return Minecraft.getInstance().getConnection();
     }
 }
