@@ -1,9 +1,9 @@
 package snw.mods.ctweaks.mod.client.render;
 
 import lombok.Getter;
-import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import snw.mods.ctweaks.mod.util.AdventureHelper;
 import snw.mods.ctweaks.object.pos.PlanePosition;
 import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdateTextRendererPacket;
 
@@ -22,7 +22,7 @@ public class ClientTextRenderer implements ClientRenderer {
 
     public void update(ClientboundUpdateTextRendererPacket packet) {
         this.pos = Objects.requireNonNullElse(packet.getNewPosition(), this.pos);
-        this.text = Optional.ofNullable(packet.getText()).map(MinecraftClientAudiences.of()::asNative).orElse(this.text);
+        this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
     }
 
     @Override
