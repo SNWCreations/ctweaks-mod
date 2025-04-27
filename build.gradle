@@ -38,20 +38,29 @@ subprojects {
         }
     }
 
+    boolean isModProject = project.name != "common"
+    configurations {
+        modImplAndInclude
+        mayInclude
+
+        modImplementation {
+            extendsFrom modImplAndInclude
+        }
+
+        implementation {
+            extendsFrom mayInclude
+        }
+
+        if (isModProject) {
+            include {
+                extendsFrom modImplAndInclude, mayInclude
+            }
+        }
+    }
+
     def lombok = "org.projectlombok:lombok:1.18.32"
     def spec = "com.github.SNWCreations:ctweaks-spec:master-SNAPSHOT"
-    def adventureVer = "4.14.0"
-    def examinationVer = "1.3.0"
-    def adventurePlatformMod = "net.kyori:adventure-platform-mod-shared-fabric-repack:6.0.0"
     def libProtocol = "com.github.SNWCreations:libprotocol:master-SNAPSHOT"
-    def includedLibs = [
-            "net.kyori:adventure-api:$adventureVer",
-            "net.kyori:adventure-key:$adventureVer",
-            "net.kyori:examination-api:$examinationVer",
-            "net.kyori:examination-string:$examinationVer",
-            adventurePlatformMod,
-            libProtocol
-    ]
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
         mappings loom.layered() {
@@ -59,14 +68,8 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
         }
 
-        boolean isModProject = project.name != "common"
-        implementation (isModProject ? include(spec) : spec)
-        modImplementation adventurePlatformMod
-        if (isModProject) {
-            includedLibs.forEach {
-                include it
-            }
-        }
+        mayInclude spec
+        mayInclude libProtocol
 
         compileOnly lombok
         annotationProcessor lombok
