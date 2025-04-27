@@ -17,10 +17,7 @@ public final class ClientNetHandler {
 
     public static void init() {
         log.info("Registering network handlers");
-//        registerPayloads();
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, ModPayload.TYPE, ModPayload.CODEC, (payload, ctx) -> {
-            getModC2SConnection().handlePayload(payload);
-        });
+        registerPayloads();
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> getModC2SConnection().onConnected());
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
             if (getVanillaConnection() != null) {
