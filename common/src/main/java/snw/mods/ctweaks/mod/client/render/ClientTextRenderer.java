@@ -1,6 +1,5 @@
 package snw.mods.ctweaks.mod.client.render;
 
-import lombok.Getter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import snw.mods.ctweaks.mod.util.AdventureHelper;
@@ -10,7 +9,6 @@ import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdateTextRendererPacket;
 import java.util.Objects;
 import java.util.Optional;
 
-@Getter
 public class ClientTextRenderer implements ClientRenderer {
     private final int id;
     private PlanePosition pos;
