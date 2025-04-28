@@ -32,6 +32,10 @@ public class ClientPlayerFaceRenderer implements ClientRenderer {
                 cachedSkinLocation = resourceLocation;
             }
         }
+        if (cachedSkinLocation == null) {
+            // todo no cache available and player is not online, nop or render Steve/Alex?
+            return;
+        }
         helper.drawPlayerFace(cachedSkinLocation, position.x(), position.y(), size);
     }
 
