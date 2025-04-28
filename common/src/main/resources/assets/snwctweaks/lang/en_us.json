@@ -1,0 +1,3 @@
+{
+  "snwctweaks.handshake.fail.incompatible_protocol": "Incompatible CTweaks protocol is used on server (Server has version %s but we have version %s)"
+}

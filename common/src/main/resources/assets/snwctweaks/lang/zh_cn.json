@@ -1,0 +1,3 @@
+{
+  "snwctweaks.handshake.fail.incompatible_protocol": "服务器正在使用不兼容的 CTweaks 协议版本 (服务端上的版本: %s, 客户端上的版本: %s)"
+}

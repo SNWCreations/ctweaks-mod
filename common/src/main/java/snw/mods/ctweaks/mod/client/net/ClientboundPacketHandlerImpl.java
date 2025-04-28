@@ -2,6 +2,10 @@ package snw.mods.ctweaks.mod.client.net;
 
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.DisconnectedScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.network.chat.Component;
 import snw.lib.protocol.packet.Packet;
 import snw.mods.ctweaks.ModConstants;
 import snw.mods.ctweaks.mod.client.render.ClientRenderer;
@@ -35,13 +39,22 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
         clearRenderers();
     }
 
+    private DisconnectedScreen createDisconnectedScreen(Component message) {
+        return new DisconnectedScreen(new JoinMultiplayerScreen(new TitleScreen()), Component.translatable("disconnect.lost"), message);
+    }
+
     @Override
     public void handleHello(ClientboundHelloPacket packet) {
         final int serverProtocolVer = packet.getProtocolVersion();
         if (ModConstants.PROTOCOL_VERSION != serverProtocolVer) {
             log.error("Incompatible mod protocol version {} on server, disconnecting", serverProtocolVer);
             Minecraft.getInstance().execute(() -> {
-                Minecraft.getInstance().disconnect();
+                Minecraft.getInstance().disconnect(
+                        createDisconnectedScreen(
+                                Component.translatable("snwctweaks.handshake.fail.incompatible_protocol",
+                                        serverProtocolVer, ModConstants.PROTOCOL_VERSION)
+                        )
+                );
             });
         } else {
             log.info("Connected to a server with CTweaks installed");
