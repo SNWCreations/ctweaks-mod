@@ -1,5 +1,6 @@
 package snw.mods.ctweaks.mod.mixin.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,6 +24,15 @@ public abstract class GuiGraphicsMixin implements snw.mods.ctweaks.mod.client.re
 
     @Shadow
     public abstract int drawString(Font font, Component text, int x, int y, int color);
+
+    @Override
+    public int drawString(Font font, Component text, int x, int y, int color, float scale) {
+        PoseStack poseStack = asHandle().pose();
+        poseStack.scale(scale, -scale, -scale);
+        int width = drawString(font, text, x, y, color);
+        poseStack.popPose();
+        return width;
+    }
 
     @Unique
     private GuiGraphics asHandle() {

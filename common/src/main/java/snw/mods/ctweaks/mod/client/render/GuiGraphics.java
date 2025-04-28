@@ -10,5 +10,7 @@ public interface GuiGraphics {
 
     int drawString(Font font, Component text, int x, int y, int color);
 
+    int drawString(Font font, Component text, int x, int y, int color, float scale);
+
     void drawPlayerFace(ResourceLocation resourceLocation, int x, int y, int size);
 }
