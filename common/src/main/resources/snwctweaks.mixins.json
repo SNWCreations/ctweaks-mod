@@ -6,7 +6,8 @@
   "client": [
     "client.ClientPacketListenerMixin",
     "client.GuiGraphicsMixin",
-    "client.GuiMixin"
+    "client.GuiMixin",
+    "client.WindowMixin"
   ],
   "mixins": [
   ],

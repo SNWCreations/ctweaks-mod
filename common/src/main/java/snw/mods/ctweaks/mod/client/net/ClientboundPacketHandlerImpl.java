@@ -21,6 +21,11 @@ import static snw.mods.ctweaks.mod.client.render.ModRender.getModRender;
 
 @Slf4j
 public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
+    private final ModC2SConnection parent;
+
+    public ClientboundPacketHandlerImpl(ModC2SConnection parent) {
+        this.parent = parent;
+    }
 
     public void close() {
         clearRenderers();
@@ -59,6 +64,7 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
             });
         } else {
             log.info("Connected to a server with CTweaks installed");
+            parent.serverModInstalled = true;
         }
     }
 

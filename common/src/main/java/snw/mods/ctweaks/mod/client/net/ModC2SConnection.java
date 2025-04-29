@@ -2,26 +2,32 @@ package snw.mods.ctweaks.mod.client.net;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import io.netty.buffer.ByteBuf;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.ServerboundPacketListener;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import snw.lib.protocol.packet.Packet;
 import snw.lib.protocol.serial.DeserializedPacket;
 import snw.lib.protocol.serial.PacketDeserializer;
 import snw.lib.protocol.serial.std.StandardPacketDeserializer;
 import snw.mods.ctweaks.protocol.PacketTypes;
 import snw.mods.ctweaks.protocol.handler.ClientboundPacketHandler;
+import snw.mods.ctweaks.protocol.handler.ServerboundPacketHandler;
+
+import java.util.function.Supplier;
 
 @Slf4j
 public class ModC2SConnection {
-    private final PacketDeserializer<ClientboundPacketHandler> packetDeserializer;
+    private final ClientPacketListener vanilla;
+    private final PacketDeserializer<ClientboundPacketHandler> s2cPacketDeserializer;
     private final ClientboundPacketHandlerImpl packetHandler;
+    boolean serverModInstalled;
 
-    public ModC2SConnection() {
-        this.packetDeserializer = new StandardPacketDeserializer<>(PacketTypes.SERVERSIDE);
-        this.packetHandler = new ClientboundPacketHandlerImpl();
+    public ModC2SConnection(ClientPacketListener vanilla) {
+        this.vanilla = vanilla;
+        this.s2cPacketDeserializer = new StandardPacketDeserializer<>(PacketTypes.SERVERSIDE);
+        this.packetHandler = new ClientboundPacketHandlerImpl(this);
     }
 
     public static ModC2SConnection getModC2SConnection() {
@@ -30,6 +36,19 @@ public class ModC2SConnection {
             return ((Getter) vanillaConnection).getCTweaksModConnection();
         } else {
             throw new IllegalStateException("Client is not connected to any server");
+        }
+    }
+
+    public void sendModPacket(Supplier<Packet<ServerboundPacketHandler>> modPacketSupplier) {
+        if (serverModInstalled) {
+            Packet<ServerboundPacketHandler> javaPacket = modPacketSupplier.get();
+            log.debug("Sending mod packet {} to server", javaPacket);
+            byte[] rawPacket = javaPacket.serialize();
+            ModPayload modPayload = new ModPayload(rawPacket);
+            val mcPacket = new ServerboundCustomPayloadPacket(modPayload);
+            vanilla.send(mcPacket);
+        } else {
+            log.warn("Ignoring mod C2S packet as server has no CTweaks mod installed");
         }
     }
 
@@ -46,7 +65,7 @@ public class ModC2SConnection {
         try {
             final byte[] data = payload.data();
             final ByteArrayDataInput in = ByteStreams.newDataInput(data);
-            final DeserializedPacket<ClientboundPacketHandler> packetContainer = packetDeserializer.deserialize(in);
+            final DeserializedPacket<ClientboundPacketHandler> packetContainer = s2cPacketDeserializer.deserialize(in);
             final snw.lib.protocol.packet.Packet<ClientboundPacketHandler> modPacket = packetContainer.packet();
             if (modPacket != null) {
                 try {

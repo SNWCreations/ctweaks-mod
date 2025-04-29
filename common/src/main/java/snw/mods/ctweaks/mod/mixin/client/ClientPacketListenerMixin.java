@@ -21,6 +21,6 @@ public class ClientPacketListenerMixin implements ModC2SConnection.Getter {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void afterInit(Minecraft minecraft, Connection connection, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-        cTweaksModConnection = new ModC2SConnection();
+        cTweaksModConnection = new ModC2SConnection((ClientPacketListener) (Object) this);
     }
 }
