@@ -13,6 +13,8 @@ public class ClientTextRenderer implements ClientRenderer {
     private final int id;
     private PlanePosition pos;
     private Component text;
+    private float scale = 1.0F;
+    private boolean noShadow;
 
     public ClientTextRenderer(int id) {
         this.id = id;
@@ -21,13 +23,14 @@ public class ClientTextRenderer implements ClientRenderer {
     public void update(ClientboundUpdateTextRendererPacket packet) {
         this.pos = Objects.requireNonNullElse(packet.getNewPosition(), this.pos);
         this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
+        // todo update scale, noShadow
     }
 
     @Override
     public void render(GuiGraphics helper) {
         if (this.pos != null && this.text != null) {
             final Font gameFont = helper.getMinecraft().font;
-            helper.drawString(gameFont, this.text, this.pos.x(), this.pos.y(), -1);
+            helper.drawString(gameFont, this.text, this.pos.x(), this.pos.y(), -1, this.noShadow, this.scale);
         }
     }
 }

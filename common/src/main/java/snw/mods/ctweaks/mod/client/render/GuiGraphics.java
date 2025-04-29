@@ -8,9 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 public interface GuiGraphics {
     Minecraft getMinecraft();
 
-    int drawString(Font font, Component text, int x, int y, int color);
-
-    int drawString(Font font, Component text, int x, int y, int color, float scale);
+    int drawString(Font font, Component text, int x, int y, int color, boolean dropShadow, float scale);
 
     void drawPlayerFace(ResourceLocation resourceLocation, int x, int y, int size);
 }

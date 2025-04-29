@@ -23,13 +23,14 @@ public abstract class GuiGraphicsMixin implements snw.mods.ctweaks.mod.client.re
     }
 
     @Shadow
-    public abstract int drawString(Font font, Component text, int x, int y, int color);
+    public abstract int drawString(Font font, Component text, int x, int y, int color, boolean dropShadow);
 
     @Override
-    public int drawString(Font font, Component text, int x, int y, int color, float scale) {
+    public int drawString(Font font, Component text, int x, int y, int color, boolean dropShadow, float scale) {
         PoseStack poseStack = asHandle().pose();
-        poseStack.scale(scale, -scale, -scale);
-        int width = drawString(font, text, x, y, color);
+        poseStack.pushPose();
+        poseStack.scale(scale, scale, scale);
+        int width = drawString(font, text, x, y, color, dropShadow);
         poseStack.popPose();
         return width;
     }
