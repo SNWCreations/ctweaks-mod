@@ -2,6 +2,7 @@ package snw.mods.ctweaks.mod.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import snw.mods.ctweaks.object.pos.PlanePosition;
 
@@ -33,8 +34,11 @@ public class ClientPlayerFaceRenderer implements ClientRenderer {
             }
         }
         if (cachedSkinLocation == null) {
-            // todo no cache available and player is not online, nop or render Steve/Alex?
-            return;
+            // If server adds a player while the client have no information about it,
+            //  we'll use default skin as fallback. The correct skin will be used when
+            //  the info of the target player is received on the client through
+            //  player info update packet.
+            cachedSkinLocation = DefaultPlayerSkin.getDefaultTexture();
         }
         helper.drawPlayerFace(cachedSkinLocation, position.x(), position.y(), size);
     }
