@@ -8,6 +8,7 @@ import lombok.val;
 import net.kyori.adventure.key.Key;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
+import snw.mods.ctweaks.render.PlayerFaceRenderer;
 import snw.mods.ctweaks.render.TextRenderer;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class ModRender {
     {
         apply(rendererFactories, it -> {
             it.put(TextRenderer.TYPE, ClientTextRenderer::new);
+            it.put(PlayerFaceRenderer.TYPE, ClientPlayerFaceRenderer::new);
         });
     }
 

@@ -5,24 +5,25 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import snw.mods.ctweaks.object.pos.PlanePosition;
+import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdatePlayerFaceRendererPacket;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class ClientPlayerFaceRenderer implements ClientRenderer {
     private final int id;
-    private final UUID targetId;
+    private UUID targetId;
     private PlanePosition position;
     private int size = 24;
     private ResourceLocation cachedSkinLocation;
 
-    public ClientPlayerFaceRenderer(int id, UUID targetId) {
+    public ClientPlayerFaceRenderer(int id) {
         this.id = id;
-        this.targetId = targetId;
     }
 
     @Override
     public void render(GuiGraphics helper) {
-        if (position == null) {
+        if (targetId == null || position == null) {
             return;
         }
         Minecraft minecraft = helper.getMinecraft();
@@ -43,7 +44,9 @@ public class ClientPlayerFaceRenderer implements ClientRenderer {
         helper.drawPlayerFace(cachedSkinLocation, position.x(), position.y(), size);
     }
 
-    public void update() {
-        // todo use somewhat packet
+    public void update(ClientboundUpdatePlayerFaceRendererPacket packet) {
+        this.targetId = Optional.ofNullable(packet.getTarget()).orElse(this.targetId);
+        this.position = Optional.ofNullable(packet.getPosition()).orElse(this.position);
+        this.size = Optional.ofNullable(packet.getSize()).orElse(this.size);
     }
 }

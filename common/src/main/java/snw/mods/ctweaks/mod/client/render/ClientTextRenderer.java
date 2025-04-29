@@ -23,7 +23,8 @@ public class ClientTextRenderer implements ClientRenderer {
     public void update(ClientboundUpdateTextRendererPacket packet) {
         this.pos = Objects.requireNonNullElse(packet.getNewPosition(), this.pos);
         this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
-        // todo update scale, noShadow
+        this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
+        this.noShadow = Optional.ofNullable(packet.getNoShadow()).orElse(this.noShadow);
     }
 
     @Override

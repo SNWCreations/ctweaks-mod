@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 import snw.lib.protocol.packet.Packet;
 import snw.mods.ctweaks.ModConstants;
+import snw.mods.ctweaks.mod.client.render.ClientPlayerFaceRenderer;
 import snw.mods.ctweaks.mod.client.render.ClientRenderer;
 import snw.mods.ctweaks.mod.client.render.ClientTextRenderer;
 import snw.mods.ctweaks.object.IntIdentified;
@@ -72,6 +73,16 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
         }
     }
 
+    @Override
+    public void handleUpdatePlayerFaceRenderer(ClientboundUpdatePlayerFaceRendererPacket packet) {
+        updateRenderer(packet, ClientPlayerFaceRenderer.class, ClientPlayerFaceRenderer::update);
+    }
+
+    @Override
+    public void handleUpdateTextRenderer(ClientboundUpdateTextRendererPacket packet) {
+        updateRenderer(packet, ClientTextRenderer.class, ClientTextRenderer::update);
+    }
+
     private <R extends ClientRenderer, P extends Packet<ClientboundPacketHandler> & IntIdentified>
     void updateRenderer(P packet, Class<R> type, BiConsumer<R, P> updater) {
         final int id = packet.getId();
@@ -86,8 +97,4 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
         }
     }
 
-    @Override
-    public void handleUpdateTextRenderer(ClientboundUpdateTextRendererPacket packet) {
-        updateRenderer(packet, ClientTextRenderer.class, ClientTextRenderer::update);
-    }
 }
