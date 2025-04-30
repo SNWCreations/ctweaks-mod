@@ -8,15 +8,18 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 import snw.lib.protocol.packet.Packet;
 import snw.mods.ctweaks.ModConstants;
+import snw.mods.ctweaks.mod.client.ClientWindow;
 import snw.mods.ctweaks.mod.client.render.ClientPlayerFaceRenderer;
 import snw.mods.ctweaks.mod.client.render.ClientRenderer;
 import snw.mods.ctweaks.mod.client.render.ClientTextRenderer;
 import snw.mods.ctweaks.object.IntIdentified;
 import snw.mods.ctweaks.protocol.handler.ClientboundPacketHandler;
+import snw.mods.ctweaks.protocol.packet.c2s.ServerboundReadyPacket;
 import snw.mods.ctweaks.protocol.packet.s2c.*;
 
 import java.util.function.BiConsumer;
 
+import static snw.lib.protocol.util.PacketHelper.newNonce;
 import static snw.mods.ctweaks.mod.client.render.ModRender.getModRender;
 
 @Slf4j
@@ -65,6 +68,8 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
         } else {
             log.info("Connected to a server with CTweaks installed");
             parent.serverModInstalled = true;
+            ((ClientWindow) (Object) Minecraft.getInstance().getWindow()).sendWindowProperties();
+            parent.sendModPacket(() -> new ServerboundReadyPacket(newNonce()));
         }
     }
 
