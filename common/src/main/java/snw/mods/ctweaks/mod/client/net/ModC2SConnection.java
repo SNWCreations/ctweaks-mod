@@ -7,6 +7,7 @@ import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import org.jetbrains.annotations.Nullable;
 import snw.lib.protocol.packet.Packet;
 import snw.lib.protocol.serial.DeserializedPacket;
 import snw.lib.protocol.serial.PacketDeserializer;
@@ -30,13 +31,21 @@ public class ModC2SConnection {
         this.packetHandler = new ClientboundPacketHandlerImpl(this);
     }
 
-    public static ModC2SConnection getModC2SConnection() {
+    public static @Nullable ModC2SConnection getModC2SConnectionOrNull() {
         final ClientPacketListener vanillaConnection = Minecraft.getInstance().getConnection();
         if (vanillaConnection != null) {
             return ((Getter) vanillaConnection).getCTweaksModConnection();
         } else {
+            return null;
+        }
+    }
+
+    public static ModC2SConnection getModC2SConnection() {
+        ModC2SConnection modC2SConnection = getModC2SConnectionOrNull();
+        if (modC2SConnection == null) {
             throw new IllegalStateException("Client is not connected to any server");
         }
+        return modC2SConnection;
     }
 
     public void sendModPacket(Supplier<Packet<ServerboundPacketHandler>> modPacketSupplier) {
