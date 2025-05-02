@@ -7,7 +7,7 @@
     "client.ClientPacketListenerMixin",
     "client.GuiGraphicsMixin",
     "client.GuiMixin",
-    "client.WindowMixin"
+    "client.MinecraftMixin"
   ],
   "mixins": [
   ],

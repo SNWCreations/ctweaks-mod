@@ -68,7 +68,7 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
         } else {
             log.info("Connected to a server with CTweaks installed");
             parent.serverModInstalled = true;
-            ((ClientWindow) (Object) Minecraft.getInstance().getWindow()).sendWindowProperties();
+            ((ClientWindow) Minecraft.getInstance()).sendWindowProperties();
             parent.sendModPacket(() -> new ServerboundReadyPacket(newNonce()));
         }
     }
