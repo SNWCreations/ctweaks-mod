@@ -1,7 +1,7 @@
 package snw.mods.ctweaks.mod.fabric;
 
-import snw.mods.ctweaks.mod.CTweaksMod;
 import net.fabricmc.api.ModInitializer;
+import snw.mods.ctweaks.mod.CTweaksMod;
 
 public final class CTweaksModFabric implements ModInitializer {
     @Override

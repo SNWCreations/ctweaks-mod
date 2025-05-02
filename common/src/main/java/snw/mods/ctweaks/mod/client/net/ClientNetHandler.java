@@ -3,9 +3,6 @@ package snw.mods.ctweaks.mod.client.net;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.extern.slf4j.Slf4j;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import org.jetbrains.annotations.Nullable;
 
 import static snw.mods.ctweaks.mod.client.net.ModC2SConnection.getModC2SConnection;
 import static snw.mods.ctweaks.mod.client.net.ModC2SConnection.getModC2SConnectionOrNull;
