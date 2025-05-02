@@ -1,4 +1,4 @@
-package snw.mods.ctweaks.mod.util.forge;
+package snw.mods.ctweaks.mod.util.neoforge;
 
 import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.minecraft.network.chat.Component;

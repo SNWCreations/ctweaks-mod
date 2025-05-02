@@ -1,4 +1,4 @@
-package snw.mods.ctweaks.mod.client.net.forge;
+package snw.mods.ctweaks.mod.client.net.neoforge;
 
 public final class ClientNetHandlerImpl {
     private ClientNetHandlerImpl() {
