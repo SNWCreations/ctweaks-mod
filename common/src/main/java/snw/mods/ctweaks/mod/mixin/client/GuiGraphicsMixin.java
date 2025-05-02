@@ -35,6 +35,15 @@ public abstract class GuiGraphicsMixin implements snw.mods.ctweaks.mod.client.re
         return width;
     }
 
+    @Override
+    public void drawStringWithOutline(Font font, Component text, int x, int y, int color, int outlineColor, float scale) {
+        PoseStack poseStack = asHandle().pose();
+        poseStack.pushPose();
+        poseStack.scale(scale, scale, scale);
+        font.drawInBatch8xOutline(text.getVisualOrderText(), x, y, color, outlineColor, poseStack.last().pose(), asHandle().bufferSource(), 15728880);
+        poseStack.popPose();
+    }
+
     @Unique
     private GuiGraphics asHandle() {
         return (GuiGraphics) (Object) this;

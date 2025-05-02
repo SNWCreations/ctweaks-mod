@@ -9,12 +9,15 @@ import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdateTextRendererPacket;
 import java.util.Objects;
 import java.util.Optional;
 
+import static snw.mods.ctweaks.ModConstants.UNIT_AS_INT;
+
 public class ClientTextRenderer implements ClientRenderer {
     private final int id;
     private PlanePosition pos;
     private Component text;
     private float scale = 1.0F;
     private boolean noShadow;
+    private int outlineColor = UNIT_AS_INT;
 
     public ClientTextRenderer(int id) {
         this.id = id;
@@ -25,13 +28,18 @@ public class ClientTextRenderer implements ClientRenderer {
         this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
         this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
         this.noShadow = Optional.ofNullable(packet.getNoShadow()).orElse(this.noShadow);
+        this.outlineColor = Objects.requireNonNullElse(packet.getOutlineColor(), this.outlineColor);
     }
 
     @Override
     public void render(GuiGraphics helper) {
         if (this.pos != null && this.text != null) {
             final Font gameFont = helper.getMinecraft().font;
-            helper.drawString(gameFont, this.text, this.pos.x(), this.pos.y(), -1, this.noShadow, this.scale);
+            if (outlineColor != UNIT_AS_INT) {
+                helper.drawStringWithOutline(gameFont, this.text, this.pos.x(), this.pos.y(), -1, this.outlineColor, this.scale);
+            } else {
+                helper.drawString(gameFont, this.text, this.pos.x(), this.pos.y(), -1, this.noShadow, this.scale);
+            }
         }
     }
 }

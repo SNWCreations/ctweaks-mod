@@ -59,7 +59,7 @@ subprojects {
     }
 
     def lombok = "org.projectlombok:lombok:1.18.32"
-    def spec = "com.github.SNWCreations:ctweaks-spec:1b78a0f8"
+    def spec = "com.github.SNWCreations:ctweaks-spec:c1dac864"
     def libProtocol = "com.github.SNWCreations:libprotocol:master-SNAPSHOT"
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
