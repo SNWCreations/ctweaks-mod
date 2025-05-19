@@ -1,20 +1,30 @@
 package snw.mods.ctweaks.mod.client.render;
 
 import com.mojang.authlib.GameProfile;
+import lombok.Getter;
+import lombok.NonNull;
+import net.kyori.adventure.key.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import snw.mods.ctweaks.object.pos.PlanePosition;
+import snw.mods.ctweaks.protocol.packet.c2s.ServerboundSetObjectPlanePosPacket;
 import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdatePlayerFaceRendererPacket;
+import snw.mods.ctweaks.render.PlayerFaceRenderer;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class ClientPlayerFaceRenderer implements ClientRenderer {
+import static snw.lib.protocol.util.PacketHelper.newNonce;
+import static snw.mods.ctweaks.mod.client.net.ModC2SConnection.getModC2SConnection;
+
+public class ClientPlayerFaceRenderer implements ClientPlaneRenderable {
+    @Getter
     private final int id;
     private UUID targetId;
     private boolean requesting;
+    @Getter
     private PlanePosition position;
     private int size = 24;
     private ResourceLocation cachedSkinLocation;
@@ -67,5 +77,31 @@ public class ClientPlayerFaceRenderer implements ClientRenderer {
         this.targetId = newTarget;
         this.position = Optional.ofNullable(packet.getPosition()).orElse(this.position);
         this.size = Optional.ofNullable(packet.getSize()).orElse(this.size);
+    }
+
+    @Override
+    public int getWidth() {
+        return size;
+    }
+
+    @Override
+    public int getHeight() {
+        return size;
+    }
+
+    @Override
+    public void setPosition(@NonNull PlanePosition position) {
+        this.position = position;
+        getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(describe(), position, newNonce()));
+    }
+
+    @Override
+    public Key getType() {
+        return PlayerFaceRenderer.TYPE;
+    }
+
+    @Override
+    public Key getExactType() {
+        return PlayerFaceRenderer.EXACT_TYPE;
     }
 }
