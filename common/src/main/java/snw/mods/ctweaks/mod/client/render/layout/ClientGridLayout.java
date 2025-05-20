@@ -66,14 +66,12 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
         if (position != null && children != null && !children.isEmpty()) {
             List<List<ClientPlaneRenderable>> lines = Lists.partition(children, columnCount);
             int elementMaxWidth = lines.stream()
-                    .mapToInt(it -> it.stream()
-                            .mapToInt(PlaneSized::getWidth)
-                            .max().orElseThrow())
+                    .flatMapToInt(it -> it.stream()
+                            .mapToInt(PlaneSized::getWidth))
                     .max().orElseThrow();
             int elementMaxHeight = lines.stream()
-                    .mapToInt(it -> it.stream()
-                            .mapToInt(PlaneSized::getHeight)
-                            .max().orElseThrow())
+                    .flatMapToInt(it -> it.stream()
+                            .mapToInt(PlaneSized::getHeight))
                     .max().orElseThrow();
             int totalWidthNoSpacing = elementMaxWidth * columnCount;
             int totalHeightNoSpacing = elementMaxHeight * rowCount;
