@@ -2,6 +2,7 @@ package snw.mods.ctweaks.mod.client.render;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
 import net.kyori.adventure.key.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static snw.lib.protocol.util.PacketHelper.newNonce;
 import static snw.mods.ctweaks.ModConstants.UNIT_AS_INT;
 import static snw.mods.ctweaks.mod.client.net.ModC2SConnection.getModC2SConnection;
+import static snw.mods.ctweaks.object.pos.PlanePosition.planePos;
 
 public class ClientTextRenderer implements ClientPlaneRenderable {
     @Getter
@@ -35,11 +37,20 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     }
 
     public void update(ClientboundUpdateTextRendererPacket packet) {
-        this.position = Objects.requireNonNullElse(packet.getNewPosition(), this.position);
-        this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
-        this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
         this.noShadow = Optional.ofNullable(packet.getNoShadow()).orElse(this.noShadow);
         this.outlineColor = Objects.requireNonNullElse(packet.getOutlineColor(), this.outlineColor);
+        if (packet.getNewPosition() != null) {
+            this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
+            this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
+        } else {
+            val oldWidth = this.getWidth();
+            val oldHeight = this.getHeight();
+            this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
+            this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
+            val widthDiff = (oldWidth - this.getWidth()) / 2;
+            val heightDiff = (oldHeight - this.getHeight()) / 2;
+            this.setPosition(planePos(this.position.x() + widthDiff, this.position.y() + heightDiff));
+        }
     }
 
     @Override
@@ -58,7 +69,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     public int getWidth() {
         if (this.text != null) {
             Font gameFont = Minecraft.getInstance().font;
-            return gameFont.width(this.text);
+            return Math.round(gameFont.width(this.text) * this.scale);
         }
         return 0;
     }
@@ -67,7 +78,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     public int getHeight() {
         if (this.text != null) {
             Font gameFont = Minecraft.getInstance().font;
-            return gameFont.wordWrapHeight(this.text, getWidth());
+            return Math.round(gameFont.wordWrapHeight(this.text, getWidth()) * this.scale);
         }
         return 0;
     }

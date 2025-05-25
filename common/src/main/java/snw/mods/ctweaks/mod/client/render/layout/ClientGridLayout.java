@@ -1,19 +1,24 @@
 package snw.mods.ctweaks.mod.client.render.layout;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import snw.mods.ctweaks.mod.client.object.PlanePositioned;
 import snw.mods.ctweaks.mod.client.object.PlaneSized;
 import snw.mods.ctweaks.mod.client.render.ClientPlaneRenderable;
+import snw.mods.ctweaks.object.IntKeyed;
 import snw.mods.ctweaks.object.pos.PlanePosition;
 import snw.mods.ctweaks.object.range.Rectangle;
 import snw.mods.ctweaks.protocol.packet.c2s.ServerboundSetObjectPlanePosPacket;
 import snw.mods.ctweaks.protocol.packet.s2c.ClientboundUpdateGridLayoutPacket;
 import snw.mods.ctweaks.render.layout.GridLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,23 +131,25 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
                 width = totalWidth;
                 height = totalHeight;
             }
+            List<Pair<IntKeyed.Descriptor, PlanePosition>> updatedPositions = new ArrayList<>();
             int i = 0; // processed lines in this call
             for (List<ClientPlaneRenderable> line : lines) {
                 int j = 0; // processed items in this line
                 int lineY = startY + (i * (elementMaxHeight + finalRowSpacing));
                 for (ClientPlaneRenderable renderable : line) {
                     int width = renderable.getWidth();
-                    int height = renderable.getHeight();
                     int xOffset = (elementMaxWidth - width) / 2;
-                    int yOffset = (elementMaxHeight - height) / 2;
                     int boxX = startX + (j * (elementMaxWidth + finalColumnSpacing));
                     int x = boxX + xOffset;
-                    int y = lineY + yOffset;
-                    renderable.setPosition(planePos(x, y));
+                    Descriptor descriptor = renderable.describe();
+                    PlanePosition pos = planePos(x, lineY);
+                    val pair = ObjectObjectImmutablePair.of(descriptor, pos);
+                    updatedPositions.add(pair);
                     j++;
                 }
                 i++;
             }
+            getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(updatedPositions, newNonce()));
         }
     }
 
