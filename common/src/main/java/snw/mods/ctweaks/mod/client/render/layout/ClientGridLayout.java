@@ -129,16 +129,15 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
             int i = 0; // processed lines in this call
             for (List<ClientPlaneRenderable> line : lines) {
                 int j = 0; // processed items in this line
-                int lineStartY = startY + (i * (elementMaxHeight + finalRowSpacing));
+                int lineY = startY + (i * (elementMaxHeight + finalRowSpacing));
                 for (ClientPlaneRenderable renderable : line) {
                     int width = renderable.getWidth();
                     int height = renderable.getHeight();
                     int xOffset = (elementMaxWidth - width) / 2;
                     int yOffset = (elementMaxHeight - height) / 2;
                     int boxX = startX + (j * (elementMaxWidth + finalColumnSpacing));
-                    int boxY = lineStartY + (j * (elementMaxHeight + finalRowSpacing));
                     int x = boxX + xOffset;
-                    int y = boxY + yOffset;
+                    int y = lineY + yOffset;
                     renderable.setPosition(planePos(x, y));
                     j++;
                 }
