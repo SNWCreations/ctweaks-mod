@@ -60,7 +60,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
             if (outlineColor != UNIT_AS_INT) {
                 helper.drawStringWithOutline(gameFont, this.text, this.position.x(), this.position.y(), -1, this.outlineColor, this.scale);
             } else {
-                helper.drawString(gameFont, this.text, this.position.x(), this.position.y(), -1, this.noShadow, this.scale);
+                helper.drawString(gameFont, this.text, this.position.x(), this.position.y(), -1, !this.noShadow, this.scale);
             }
         }
     }
