@@ -40,8 +40,8 @@ public abstract class MinecraftMixin implements ClientWindow {
         ModC2SConnection modC2SConnection = getModC2SConnectionOrNull();
         if (modC2SConnection != null) {
             modC2SConnection.sendModPacket(() -> new ServerboundWindowPropertiesPacket(
-                    getWindow().getWidth(),
-                    getWindow().getHeight(),
+                    getWindow().getGuiScaledWidth(),
+                    getWindow().getGuiScaledHeight(),
                     getWindow().isFullscreen(),
                     newNonce()
             ));
