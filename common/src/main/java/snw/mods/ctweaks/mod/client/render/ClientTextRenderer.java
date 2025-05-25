@@ -85,8 +85,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
 
     @Override
     public void setPosition(@NonNull PlanePosition position) {
-        this.position = position;
-        getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(describe(), this.position, newNonce()));
+        setPosition(position, false);
     }
 
     @Override
@@ -97,5 +96,13 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     @Override
     public Key getExactType() {
         return TextRenderer.EXACT_TYPE;
+    }
+
+    @Override
+    public void setPosition(PlanePosition position, boolean noPacket) {
+        this.position = position;
+        if (!noPacket) {
+            getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(describe(), this.position, newNonce()));
+        }
     }
 }

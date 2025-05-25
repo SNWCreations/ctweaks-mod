@@ -91,8 +91,7 @@ public class ClientPlayerFaceRenderer implements ClientPlaneRenderable {
 
     @Override
     public void setPosition(@NonNull PlanePosition position) {
-        this.position = position;
-        getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(describe(), position, newNonce()));
+        setPosition(position, false);
     }
 
     @Override
@@ -103,5 +102,13 @@ public class ClientPlayerFaceRenderer implements ClientPlaneRenderable {
     @Override
     public Key getExactType() {
         return PlayerFaceRenderer.EXACT_TYPE;
+    }
+
+    @Override
+    public void setPosition(PlanePosition position, boolean noPacket) {
+        this.position = position;
+        if (!noPacket) {
+            getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(describe(), position, newNonce()));
+        }
     }
 }
