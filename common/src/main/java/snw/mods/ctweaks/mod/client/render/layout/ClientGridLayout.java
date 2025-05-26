@@ -70,16 +70,26 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
     public void arrangeElements() {
         if (position != null && children != null && !children.isEmpty()) {
             List<List<ClientPlaneRenderable>> lines = Lists.partition(children, columnCount);
-            int elementMaxWidth = lines.stream()
-                    .flatMapToInt(it -> it.stream()
-                            .mapToInt(PlaneSized::getWidth))
-                    .max().orElseThrow();
-            int elementMaxHeight = lines.stream()
-                    .flatMapToInt(it -> it.stream()
-                            .mapToInt(PlaneSized::getHeight))
-                    .max().orElseThrow();
+            int elementMaxWidth = 0;
+            int[] lineMaxHeights = new int[lines.size()];
+            int totalHeightNoSpacing = 0;
+            for (int i = 0, linesSize = lines.size(); i < linesSize; i++) {
+                val line = lines.get(i);
+                int lineMaxHeight = 0;
+                for (val renderable : line) {
+                    val width = renderable.getWidth();
+                    val height = renderable.getHeight();
+                    if (width > elementMaxWidth) {
+                        elementMaxWidth = width;
+                    }
+                    if (height > lineMaxHeight) {
+                        lineMaxHeight = height;
+                    }
+                }
+                lineMaxHeights[i] = lineMaxHeight;
+                totalHeightNoSpacing += lineMaxHeight;
+            }
             int totalWidthNoSpacing = elementMaxWidth * columnCount;
-            int totalHeightNoSpacing = elementMaxHeight * rowCount;
             int totalWidth = totalWidthNoSpacing + (columnCount - 1) * columnSpacing;
             int totalHeight = totalHeightNoSpacing + (rowCount - 1) * rowSpacing;
             int startX, startY, finalRowSpacing, finalColumnSpacing;
@@ -133,9 +143,10 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
             }
             List<Pair<IntKeyed.Descriptor, PlanePosition>> updatedPositions = new ArrayList<>();
             int i = 0; // processed lines in this call
+            int lineOffset = 0;
             for (List<ClientPlaneRenderable> line : lines) {
                 int j = 0; // processed items in this line
-                int lineY = startY + (i * (elementMaxHeight + finalRowSpacing));
+                int lineY = startY + lineOffset + (i * finalRowSpacing);
                 for (ClientPlaneRenderable renderable : line) {
                     int width = renderable.getWidth();
                     int xOffset = (elementMaxWidth - width) / 2;
@@ -148,6 +159,7 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
                     renderable.setPosition(pos, false);
                     j++;
                 }
+                lineOffset += lineMaxHeights[i];
                 i++;
             }
             getModC2SConnection().sendModPacket(() -> new ServerboundSetObjectPlanePosPacket(updatedPositions, newNonce()));

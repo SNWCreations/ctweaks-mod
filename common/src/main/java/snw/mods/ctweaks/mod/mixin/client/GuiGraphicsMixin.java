@@ -30,7 +30,7 @@ public abstract class GuiGraphicsMixin implements snw.mods.ctweaks.mod.client.re
         PoseStack poseStack = asHandle().pose();
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        int width = drawString(font, text, x, y, color, dropShadow);
+        int width = drawString(font, text, Math.round(x / scale), Math.round(y / scale), color, dropShadow);
         poseStack.popPose();
         return width;
     }
@@ -40,7 +40,7 @@ public abstract class GuiGraphicsMixin implements snw.mods.ctweaks.mod.client.re
         PoseStack poseStack = asHandle().pose();
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        font.drawInBatch8xOutline(text.getVisualOrderText(), x, y, color, outlineColor, poseStack.last().pose(), asHandle().bufferSource(), 15728880);
+        font.drawInBatch8xOutline(text.getVisualOrderText(), Math.round(x / scale), Math.round(y / scale), color, outlineColor, poseStack.last().pose(), asHandle().bufferSource(), 15728880);
         poseStack.popPose();
     }
 

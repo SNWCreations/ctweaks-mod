@@ -39,17 +39,14 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     public void update(ClientboundUpdateTextRendererPacket packet) {
         this.noShadow = Optional.ofNullable(packet.getNoShadow()).orElse(this.noShadow);
         this.outlineColor = Objects.requireNonNullElse(packet.getOutlineColor(), this.outlineColor);
+        val oldWidth = this.getWidth();
+        this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
+        this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
+        val widthDiff = (oldWidth - this.getWidth()) / 2;
         if (packet.getNewPosition() != null) {
-            this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
-            this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
-        } else {
-            val oldWidth = this.getWidth();
-            val oldHeight = this.getHeight();
-            this.text = Optional.ofNullable(packet.getText()).map(AdventureHelper::asNative).orElse(this.text);
-            this.scale = Optional.ofNullable(packet.getScale()).orElse(this.scale);
-            val widthDiff = (oldWidth - this.getWidth()) / 2;
-            val heightDiff = (oldHeight - this.getHeight()) / 2;
-            this.setPosition(planePos(this.position.x() + widthDiff, this.position.y() + heightDiff));
+            this.setPosition(packet.getNewPosition(), true);
+        } else if (this.position != null && widthDiff != 0) {
+            this.setPosition(planePos(this.position.x() + widthDiff, this.position.y()));
         }
     }
 
@@ -78,7 +75,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     public int getHeight() {
         if (this.text != null) {
             Font gameFont = Minecraft.getInstance().font;
-            return Math.round(gameFont.wordWrapHeight(this.text, getWidth()) * this.scale);
+            return Math.round(gameFont.wordWrapHeight(this.text, Integer.MAX_VALUE) * this.scale);
         }
         return 0;
     }

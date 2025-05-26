@@ -19,11 +19,9 @@ import snw.mods.ctweaks.render.TextRenderer;
 import snw.mods.ctweaks.render.layout.GridLayout;
 import snw.mods.ctweaks.render.layout.Layout;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static snw.mods.ctweaks.mod.util.Util.apply;
@@ -137,7 +135,7 @@ public class ModRender {
                         .map(this::lookupClientObject)
                         .map(converter)
                         .filter(Objects::nonNull)
-                        .toList();
+                        .collect(Collectors.toCollection(ArrayList::new)); // should be modifiable
     }
 
     public ClientObject lookupClientObject(IntKeyed.Descriptor descriptor) {
