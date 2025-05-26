@@ -156,7 +156,7 @@ public class ClientGridLayout extends ClientLayout<ClientPlaneRenderable> implem
                     PlanePosition pos = planePos(x, lineY);
                     val pair = ObjectObjectImmutablePair.of(descriptor, pos);
                     updatedPositions.add(pair);
-                    renderable.setPosition(pos, false);
+                    renderable.setPosition(pos, true);
                     j++;
                 }
                 lineOffset += lineMaxHeights[i];
