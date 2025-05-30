@@ -34,11 +34,7 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
     }
 
     public void close() {
-        clearRenderers();
-    }
-
-    private void clearRenderers() {
-        getModRender().clearRenderers();
+        getModRender().clear();
     }
 
     @Override
@@ -69,7 +65,7 @@ public class ClientboundPacketHandlerImpl implements ClientboundPacketHandler {
 
     @Override
     public void handleClearRenderer(ClientboundClearRendererPacket packet) {
-        clearRenderers();
+        getModRender().clearRenderers();
     }
 
     private DisconnectedScreen createDisconnectedScreen(Component message) {

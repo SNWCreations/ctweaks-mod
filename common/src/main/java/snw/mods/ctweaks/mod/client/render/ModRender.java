@@ -85,6 +85,11 @@ public class ModRender {
         objectContainers.forEach(it -> it.removeIfInside(descriptor));
     }
 
+    public void clear() {
+        clearRenderers();
+        clearLayouts();
+    }
+
     public void clearRenderers() {
         renderers.clear();
     }
