@@ -75,7 +75,7 @@ public class ClientTextRenderer implements ClientPlaneRenderable {
     public int getHeight() {
         if (this.text != null) {
             Font gameFont = Minecraft.getInstance().font;
-            return Math.round(gameFont.wordWrapHeight(this.text, Integer.MAX_VALUE) * this.scale);
+            return Math.round(gameFont.lineHeight * this.scale);
         }
         return 0;
     }
